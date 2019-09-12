@@ -1,0 +1,73 @@
+#!/usr/bin/php
+<?php
+
+# 4 x 4 keyboard matrix setup script
+# Author : David Lublink
+# License : GPLv2+
+
+/*
+======= 23 25  18  24 =======
+gpio27  1   2   3   4
+gpio17  4   5   6   B
+gpio22  7   8   9   C
+gpio4   *   0   #   D
+*/
+
+$grid = [];
+$grid[] = [ '1', '2', '3', 'A' ];
+$grid[] = [ '4', '5', '6', 'B' ];
+$grid[] = [ '7', '8', '9', 'C' ];
+$grid[] = [ '*', '0', '#', 'D' ];
+
+define( 'GPIO', '/sys/class/gpio' );
+
+$rows = [ 27, 17, 22, 4 ];
+$columns = [ 23, 25, 18, 24 ];
+
+echo "\n\n\n";
+echo "Output ===> ";
+
+$ts = time() + 30;
+while( $ts > time() )
+{
+	foreach ( $rows as $row )
+	{
+		on( $row );
+		foreach ( $columns as $column )	
+		{
+			if ( iss( $column ) )
+				echo what( $row, $column ) ;
+		}
+		off( $row );
+	}
+	usleep(10000);
+}
+
+function what ( $row, $column )
+{
+	global $rows, $columns, $grid ;
+
+	$ridx = array_search( $row, $rows );
+	$cidx = array_search( $column, $columns );
+
+	while( iss( $column ) ) usleep( 50000 ); 
+
+	return $grid[$ridx][$cidx] ;
+}                      
+                       
+function on( $row )
+{
+	file_put_contents( GPIO . '/gpio'. $row .'/value', 1 );
+}
+
+function iss ( $column )
+{
+	return trim( file_get_contents( GPIO . '/gpio'. $column .'/value') ) === '1';
+
+}
+
+function off( $row )
+{
+	file_put_contents( GPIO . '/gpio'. $row .'/value', 0 );
+}
+
