@@ -1,0 +1,110 @@
+#!/usr/bin/php
+<?php
+
+Class PHPPiano_MCP23017
+{
+     private $chips = [ 0x20] ; // , 24, 26 ];
+     private $banks = [ 'A' => 0, 'B' => 1 ];
+     private $pins  = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
+
+     private $bus = 1;
+
+     const IODIR  = 0x01 ;
+     const IPOL   = 0x02;
+     const GPINTEN = 0x04;
+
+     const DEFVAL = 0x06;
+     const INTCON = 0x08;
+     const IOCON  = 0x0A;
+
+     const GPPU   = 0x0C;
+     const INTF   = 0x0E;
+     const INTCAP = 0x10;
+     const GPIO   = 0x12;
+     const OLAT   = 0x14;
+
+
+
+     public function __construct( )/*{{{*/
+     {
+          echo "Set all chips to input\n";
+          $this->_forEachChip( [ $this, 'set' ], self::IODIR, 'A' ) ;
+          $this->_forEachChip( [ $this, 'set' ], self::IODIR, 'B' ) ;
+
+          echo "setting pullup resistors to on\n";
+          $this->_forEachChip( [ $this, 'set' ], self::GPPU, 'A' ) ;
+          $this->_forEachChip( [ $this, 'set' ], self::GPPU, 'B' ) ;
+     }/*}}}*/
+     
+     public function getRegister( $bank, $register )/*{{{*/
+     {
+          return $register + $this->banks[$bank];
+     }/*}}}*/
+     
+     public function set( $chip, $register, $bank, $byte = 0xFF)/*{{{*/
+     {
+          $e = "i2cset -y {$this->bus} 0x".dechex($chip) . " 0x". dechex($register) . ' 0x' . dechex( $byte ) ;
+
+          echo $e ."\n";
+
+          shell_exec( $e );
+     }/*}}}*/
+
+     private function get( $chip, $register )/*{{{*/
+     {
+          $e = "i2cget -y {$this->bus} 0x". dechex( $chip)." 0x". dechex($register) ;
+
+          echo $e ."\n";
+
+          $r = trim(shell_exec( $e ));
+
+          return $r; 
+
+     }/*}}}*/
+
+     private function _forEachChip( $cb )/*{{{*/
+     {
+          $arguments = func_get_args();
+          foreach ( $this->chips as $chip )
+          {
+               // remove previous parameter
+               array_shift( $arguments );
+
+               // add new chip
+               array_unshift( $arguments, $chip );
+
+               // call callback
+               call_user_func_array( $cb, $arguments );
+          }
+     }/*}}}*/
+     
+     public function scanInputs()/*{{{*/
+     {
+          $this->setOutput( 0x20, self::IODIR, 'B', 5 );
+
+          $this->_forEachChip( [ $this, 'readInputs' ], 'A' );
+          $this->_forEachChip( [ $this, 'readInputs' ], 'B' );
+     }/*}}}*/
+
+     public function readInputs( $chip, $bank )/*{{{*/
+     {
+          echo "$chip / $bank \n";
+          $r = $this->get( $chip, $this->getRegister( $bank, self::GPIO ) );
+          var_dump( base_convert( $r, 16, 2 ) );
+          var_dump( $r );
+
+     }/*}}}*/
+
+     public function setOutput( $chip, $register, $bank, $pin )/*{{{*/
+     {
+          echo "Setting output pin $chip/$register/$bank/$pin\n";
+          $byte = 255 & ~ pow(2, $pin - 1 ) ;
+          $this->set( $chip, $register, $bank, $byte );
+
+     }/*}}}*/
+}
+
+
+$obj = new PHPPiano_MCP23017 ;
+
+     $obj->scanInputs();
