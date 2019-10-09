@@ -1,0 +1,225 @@
+#!/usr/bin/php
+<?php
+
+class MCP23017 
+{
+     private $chips = [ 0x20, 0x24, 0x26 ];
+     private $banks = [ 'A' => 0, 'B' => 1 ];
+     private $pins  = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
+
+     private $bus = 1;
+
+     const IODIR  = 0x01 ;
+     const IPOL   = 0x02;
+     const GPINTEN = 0x04;
+
+     const DEFVAL = 0x06;
+     const INTCON = 0x08;
+     const IOCON  = 0x0A;
+
+     const GPPU   = 0x0C;
+     const INTF   = 0x0E;
+     const INTCAP = 0x10;
+     const GPIO   = 0x12;
+     const OLAT   = 0x14;
+
+}
+
+class PHPPianoKeys /*{{{*/
+{
+     private $chips = [ 0x20, 0x24, 0x26 ] ;
+     private $bus = [ 'A', 'B' ];
+     private $pins = [ 0, 1, 2, 3, 4, 5, 6, 7 ] ; 
+
+     private $array        ;
+     private $pointers     ;
+     private $point    = 0 ;
+
+     public function __construct()/*{{{*/
+     {
+          foreach ( $this->chips as $chip )
+          {
+               foreach ( $this->bus as $bus )
+               {
+                    $this->pointers[] = new Bus8Bits( new I2C( 1, $chip ), $bus ); 
+               }
+          }
+     }/*}}}*/
+
+     public function getKeys()/*{{{*/
+     {
+          return $this->pointers ;
+     }/*}}}*/
+
+     public function scan()/*{{{*/
+     {
+          foreach ( $this->pointers as $bus )
+          {
+               for(  $i = 0; $i < 8 ; $i++ )
+               {
+                    $bus->resetDirections();
+                    $bus->setDirection( $i, false  );
+                    $bus->setBit( $i, true );
+                    $bus->commit();
+
+                    foreach ( $this->pointers as $inputs )
+                    {
+                         $inputs->read();
+                         $bits = $inputs->getBits();
+                         if ( in_array( '1', $bits ) )
+                              echo 'hit!';
+                         else
+                              echo 'miss';
+                    }
+               }
+          }
+
+
+     }/*}}}*/
+
+
+}/*}}}*/
+
+class Bus8Bits/*{{{*/
+{
+     private $iodir = [ 1, 1, 1, 1, 1, 1, 1, 1 ];
+     private $value = [ 0, 0, 0, 0, 0, 0, 0, 0 ];
+
+     private $bus;
+
+     public function __toString()/*{{{*/
+     {
+          return $this->i2c->__toString() . ' => '. $this->bus ;
+     }/*}}}*/
+
+     public function __construct( I2C $i2c, $bus )/*{{{*/
+     {
+          $this->i2c    = $i2c ;
+          $this->bus    = $bus ;
+     }/*}}}*/
+
+     public function resetDirections()/*{{{*/
+     {
+          foreach ( $this->iodir as $key => $value )
+               $this->iodir[$key] = 0; 
+     }/*}}}*/
+
+     public function setDirection( $id, $input )/*{{{*/
+     {
+          $this->iodir[ $id ] = !$input ;
+     }/*}}}*/
+     
+     public function getBits()/*{{{*/
+     {
+          $data = [];
+          foreach ( $this->value as $key => $v )
+               $data[$key] = $this->iodir[ $key ] ? $v : null ;
+
+          return $data;
+     }/*}}}*/
+
+     public function setBit( $bit, $value )/*{{{*/
+     {
+          if ( ! array_key_exists( $bit, $this->iodir ) )
+               throw new exception("invalid bit");
+          $this->value[$bit] = $value;
+     }/*}}}*/
+
+     public function getBit( $bit )/*{{{*/
+     {
+          if ( ! array_key_exists( $bit, $this->iodir ) )
+               throw new exception("invalid bit");
+          return $this->value[$bit] ;
+     }/*}}}*/
+
+     private function getRegister( $registry )/*{{{*/
+     {
+          return $registry + ( $this->bus === 'A' )  ? 1 : 0 ;
+     }/*}}}*/
+
+     public function commit()/*{{{*/
+     {
+          $this->i2c->set( $this->getRegister( MCP23017::IODIR ), $this->getDirections() ) ;
+          $this->i2c->set( $this->getRegister( MCP23017::GPIO ),  $this->getValue()      ) ;
+     }/*}}}*/
+
+     public function read()/*{{{*/
+     {
+          $r = $this->i2c->get( MCP23017::GPIO );
+          foreach ( $this->value as $key => $value )
+          {
+               $this->value[ $key ] = pow( 2, $key ) & $r > 0 ;
+          }
+     }/*}}}*/
+
+     public function getValue()/*{{{*/
+     {
+          return implode( '', $this->value ) ;
+     }/*}}}*/
+
+     protected function getDirections()/*{{{*/
+     {
+          return implode( '', $this->iodir );
+
+     }/*}}}*//*}}}*/
+
+}
+
+
+class I2C/*{{{*/
+{
+     private $chip ;
+
+     public function __construct( $bus, $address )/*{{{*/
+     {
+          $this->bus = $bus;
+          $this->address = $address ;
+
+     }/*}}}*/
+
+     public function __toString()/*{{{*/
+     {
+          return 'xxxx> ' . $this->address. ' <xxxx';;
+     }/*}}}*/
+     
+     public function set( $register, $value )/*{{{*/
+     {
+          $e = "i2cset " 
+               . '-y '
+               . $this->bus 
+               . ' 0x'
+               . str_pad( base_convert( $this->address, 10, 16 ), 2, '0' )
+               . ' 0x'
+               . str_pad( base_convert( $register, 10, 16 ), 2, '0' )
+               . ' 0x'
+               . str_pad( base_convert( $value, 2, 16 ), 2, '0' )
+               ;
+
+          return shell_exec( $e );
+     }/*}}}*/
+
+     public function get( $register )/*{{{*/
+     {
+          $e = "i2cget " 
+               . '-y '
+               . $this->bus 
+               . ' 0x'
+               . str_pad( base_convert( $this->address, 10, 16 ), 2, '0' )
+               . ' 0x'
+               . str_pad( base_convert( $register, 10, 16 ), 2, '0' )
+               ;
+
+          return hexdec(  trim( shell_exec( $e ) )) ;
+     }/*}}}*/
+
+
+}/*}}}*/
+
+
+$obj = new PHPPianoKeys ;
+
+$obj->scan();
+
+
+
+
