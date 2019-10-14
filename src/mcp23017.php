@@ -1,5 +1,6 @@
-#!/usr/bin/php
 <?php
+
+namespace Lublink ;
 
 Class MCP23017Bank
 {

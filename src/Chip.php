@@ -1,5 +1,6 @@
 <?php
 
+namespace Lublink;
 
 class I2CChip
 {

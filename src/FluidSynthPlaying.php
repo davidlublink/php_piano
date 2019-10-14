@@ -1,5 +1,7 @@
 <?php
 
+namespace Lublink;
+
 Class FluidSynthNote
 {
      private $speed = 100;

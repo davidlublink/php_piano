@@ -1,5 +1,7 @@
 <?php
 
+namespace Lublink;
+
 Class Byte
 {
      private $byte = '00000000' ;

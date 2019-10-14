@@ -1,5 +1,7 @@
 <?php
 
+namespace Lublink;
+
 Class I2C
 {
 

@@ -1,8 +1,12 @@
 <?php
 
+use Lublink\Byte;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 
 $byte = new Byte ;
 
 print_r( $byte );
+
+

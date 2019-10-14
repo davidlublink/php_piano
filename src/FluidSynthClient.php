@@ -1,5 +1,7 @@
 <?php
 
+namespace Lublink;
+
 class FluidSynthClient
 {
      private $socket = null;
