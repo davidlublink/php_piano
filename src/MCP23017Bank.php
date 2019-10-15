@@ -7,7 +7,7 @@ Class MCP23017Bank
      private $banks = [ 'A' => 0, 'B' => 1 ];
      private $pins  = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
 
-     const IODIR  = 0x01 ;
+     const IODIR  = 0x00 ;
      const IPOL   = 0x02;
      const GPINTEN = 0x04;
 
@@ -43,15 +43,14 @@ Class MCP23017Bank
           return $register + $this->banks[$this->bank];
      }/*}}}*/
      
-     public function set( $register, Byte $byte )/*{{{*/
+     public function write( $register, Byte $byte )/*{{{*/
      {
-          return $this->chip->set( $this->getRegister( $register), $byte );
+          return $this->chip->write( $this->getRegister( $register), $byte );
      }/*}}}*/
 
-     public function get( $register )/*{{{*/
+     public function read( $register )/*{{{*/
      {
-          echo "pretending to read $register\n";
-         // @todo
+          return  $this->chip->read( $this->getRegister( $register ), $byte );
      }/*}}}*/
 
 }

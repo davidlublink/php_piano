@@ -4,23 +4,26 @@ namespace Lublink ;
 
 class MatrixIn extends MCP23017Bank
 {
-     public function __construct( I2CChip $chip, $bank  )
+
+     public function __construct( I2CChip $chip, $bank  )/*{{{*/
      {
           parent::__construct( $chip, $bank );
 
-          $this->set( self::IODIR, self::IN );
-          
-          echo 'set this bank to be Input ';
-     }
+          $byte = new Byte ;
+          for ( $i = 0; $i < 8 ; $i++ )
+               $byte->setBit( $i, self::IN ); 
 
-     public function read()
+          $this->write( self::IODIR, $byte );
+     }/*}}}*/
+
+     public function read($register)/*{{{*/
      {
           echo 'pretend to read here ' ;
 
           $byte = new Byte ;
 
           return $byte ;
-     }
+     }/*}}}*/
 
 
 
