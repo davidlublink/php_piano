@@ -38,7 +38,7 @@ Class MCP23017Bank
           $this->bank = $bank ;
      }/*}}}*/
 
-     public function getRegister( $register )/*{{{*/
+     private function getRegister( $register )/*{{{*/
      {
           return $register + $this->banks[$this->bank];
      }/*}}}*/
@@ -46,6 +46,12 @@ Class MCP23017Bank
      public function set( $register, Byte $byte )/*{{{*/
      {
           return $this->chip->set( $this->getRegister( $register), $byte );
+     }/*}}}*/
+
+     public function get( $register )/*{{{*/
+     {
+          echo "pretending to read $register\n";
+         // @todo
      }/*}}}*/
 
 }

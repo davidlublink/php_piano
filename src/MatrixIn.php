@@ -8,8 +8,18 @@ class MatrixIn extends MCP23017Bank
      {
           parent::__construct( $chip, $bank );
 
+          $this->set( self::IODIR, self::IN );
           
           echo 'set this bank to be Input ';
+     }
+
+     public function read()
+     {
+          echo 'pretend to read here ' ;
+
+          $byte = new Byte ;
+
+          return $byte ;
      }
 
 
