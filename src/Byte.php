@@ -7,6 +7,7 @@ use \Exception ;
 Class Byte
 {
      private $byte = '00000000' ;
+     const DEFAULT = '00000000' ;
 
      public function __construct( $value = null )/*{{{*/
      {
@@ -51,4 +52,8 @@ Class Byte
           return (bool)(int) $this->byte[ $idx ] ;
      }/*}}}*/
 
+     public function isNonZero()/*{{{*/
+     {
+          return self::DEFAULT !== $this->byte;
+     }/*}}}*/
 }

@@ -14,17 +14,16 @@ class MatrixOut extends MCP23017Bank implements Iterator
           $this->write( self::IODIR, new Byte( self::OUT ) ) ;
           $this->write( self::GPPU, new Byte( 0xff ) ); 
 
-
-          $this->rewind() ;
      }/*}}}*/
 
      /* implement these to run through the chip, 0 -7 , activate one, disable all others */
      private $idx = 0 ;
-     public function current ( ) 
-     {
 
+     public function current ( ) /*{{{*/
+     {
+          $this->write( self::OLAT, new Byte( pow( 2, $this->idx ) ) );
           return $this->idx ;
-     }
+     }/*}}}*/
 
      public function key ( ) /*{{{*/
      {
@@ -34,23 +33,22 @@ class MatrixOut extends MCP23017Bank implements Iterator
      public function next ( ) /*{{{*/
      {
           $this->idx = $this->idx + 1 ;
-
-          $this->write( self::OLAT, new Byte( pow( 2, $this->idx ) ) );
-
-          return $this->idx;
      }/*}}}*/
 
      public function rewind ( ) /*{{{*/
      {
-          $this->idx = -1 ;
-          $this->next();
+          $this->idx = 0;
      }/*}}}*/
 
      public function valid ( ) /*{{{*/
      {
-          return $this->idx < 8 && $this->idx >= 0; 
+          return $this->idx < 8 && $this->idx >= 0;
      }/*}}}*/
 
+     public function clear()/*{{{*/
+     {
+          $this->write( self::OLAT, new Byte( 0x00 ) ); 
+     }/*}}}*/
 
 
 }

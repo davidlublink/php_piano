@@ -16,7 +16,7 @@ class MatrixIn extends MCP23017Bank
           $this->write( self::IODIR, $byte );
      }/*}}}*/
 
-     public function read($register)/*{{{*/
+     public function read()/*{{{*/
      {
           echo 'pretend to read here ' ;
 
