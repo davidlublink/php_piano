@@ -5,7 +5,7 @@ namespace Lublink;
 Class I2C
 {
 
-     public function __construct( $bus )/*{{{*/
+     public function __construct( $bus = 1 )/*{{{*/
      {
           $this->bus = $bus ;
      }/*}}}*/

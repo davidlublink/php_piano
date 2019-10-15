@@ -22,8 +22,8 @@ Class MCP23017Bank
      const OLAT   = 0x14;
 
 
-     const BANK_A = 'A';
-     const BANK_B = 'B';
+     const A = 'A';
+     const B = 'B';
 
 
      const IN = 1;
