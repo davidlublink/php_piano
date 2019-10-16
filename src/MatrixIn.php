@@ -18,11 +18,7 @@ class MatrixIn extends MCP23017Bank
 
      public function read()/*{{{*/
      {
-          echo 'pretend to read here ' ;
-
-          $byte = new Byte ;
-
-          return $byte ;
+          return parent::read( self::GPIO )->getActiveBits();
      }/*}}}*/
 
 

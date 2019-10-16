@@ -14,9 +14,7 @@ Class I2C
      {
           $e = "i2cset -y {$this->bus} ".$this->toHex($chip) . " ". $this->toHex($register) . ' ' . $this->toHex( $byte->getInteger() ) ;
 
-          echo $e ."\n";
-
-          //shell_exec( $e );
+          shell_exec( $e );
 
      }/*}}}*/
 
@@ -27,13 +25,15 @@ Class I2C
 
      public function read( $chip, $register)/*{{{*/
      {
-          $e = "i2cget -y {$this->bus} 0x". $this->toHex( $chip)." 0x". $this->toHex($register) ;
-
-          echo $e ."\n";
+          $e = "i2cget -y {$this->bus} ". $this->toHex( $chip)." ". $this->toHex($register) ;
 
           $byte = new Byte;
-          $byte->setHex( 0x22 );
-          //$byte->setHex( trim(shell_exec( $e )) );
+          //$byte->setHex( 0x22 );
+          $r = trim(shell_exec( $e ));
+          if ( strlen( $r ) !== 4 )
+               throw new \Exception($r);
+
+          $byte->setHex( $r ) ;
 
           return $byte; 
      }/*}}}*/

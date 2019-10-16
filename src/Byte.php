@@ -7,7 +7,7 @@ use \Exception ;
 Class Byte
 {
      private $byte = '00000000' ;
-     const DEFAULT = '00000000' ;
+     const DEF = '00000000' ;
 
      public function __construct( $value = null )/*{{{*/
      {
@@ -49,11 +49,22 @@ Class Byte
           if ( $idx > 7 || $idx < 0 )
                throw new Exception("Bad bit");
 
-          return (bool)(int) $this->byte[ $idx ] ;
+          return '1' === $this->byte[ $idx ] ;
      }/*}}}*/
 
      public function isNonZero()/*{{{*/
      {
-          return self::DEFAULT !== $this->byte;
+          return self::DEF !== $this->byte;
      }/*}}}*/
+
+     public function getActiveBits()/*{{{*/
+     {
+          $r = [] ;
+          for ( $i = 0; $i < strlen( $this->byte ); $i++ )
+               if ( $this->getBit( $i ) )
+                    $r[$i] = $i ;
+
+          return $r ;
+     }/*}}}*/
+
 }

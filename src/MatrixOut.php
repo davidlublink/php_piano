@@ -42,7 +42,7 @@ class MatrixOut extends MCP23017Bank implements Iterator
 
      public function valid ( ) /*{{{*/
      {
-          return $this->idx < 8 && $this->idx >= 0;
+          return array_key_exists( $this->idx, $this->getPins() ) ;
      }/*}}}*/
 
      public function clear()/*{{{*/

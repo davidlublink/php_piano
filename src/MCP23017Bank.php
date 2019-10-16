@@ -7,19 +7,19 @@ Class MCP23017Bank
      private $banks = [ 'A' => 0, 'B' => 1 ];
      private $pins  = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
 
-     const IODIR  = 0x00 ;
-     const IPOL   = 0x02;
+     const IODIR   = 0x00 ;
+     const IPOL    = 0x02;
      const GPINTEN = 0x04;
 
-     const DEFVAL = 0x06;
-     const INTCON = 0x08;
-     const IOCON  = 0x0A;
+     const DEFVAL  = 0x06;
+     const INTCON  = 0x08;
+     const IOCON   = 0x0A;
 
-     const GPPU   = 0x0C;
-     const INTF   = 0x0E;
-     const INTCAP = 0x10;
-     const GPIO   = 0x12;
-     const OLAT   = 0x14;
+     const GPPU    = 0x0C;
+     const INTF    = 0x0E;
+     const INTCAP  = 0x10;
+     const GPIO    = 0x12;
+     const OLAT    = 0x14;
 
 
      const A = 'A';
@@ -48,9 +48,20 @@ Class MCP23017Bank
           return $this->chip->write( $this->getRegister( $register), $byte );
      }/*}}}*/
 
+     protected function getPins()
+     {
+          return $this->pins ;
+     }
+
+     public function disablePins()
+     {
+          foreach( func_get_args() as $row )
+               unset( $this->pins[ $row ]) ;
+     }
+
      public function read( $register )/*{{{*/
      {
-          return  $this->chip->read( $this->getRegister( $register ), $byte );
+          return $this->chip->read( $this->getRegister( $register ) );
      }/*}}}*/
 
 }
