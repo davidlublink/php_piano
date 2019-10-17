@@ -9,11 +9,13 @@ $bus = new I2C ;
 $chip = new I2CChip( $bus, 0x20 );
 
 $outputs    = [];
-$inputs[]   = $r = new MatrixIn( $chip, MatrixOut::A ) ;
-$r->disablePins( 4, 5, 6, 7 );
+$outputs[]  = $r = new MatrixOut( $chip, MatrixOut::B ) ; 
+$r->disablePins( 5,6,7 );
 
-$outputs[]  = $r = new MatrixOut( $chip, MatrixOut::B ) ;
-$r->disablePins( 4, 5, 6, 7 );
+$inputs = [];
+$inputs[]   = $r = new MatrixIn( $chip, MatrixOut::A ) ;
+$r->disablePins( 4,5,6,7 );
+
 
 
 $matrix = [
@@ -34,8 +36,7 @@ foreach ( $outputs as $output )
 
                foreach ( $byte as $row )
                {
-                    echo "============> $col x $row  <==========\n";
-                    //echo "\n\n\n\n============> ". $matrix[ $row ] [ $col ]."<========== \n\n\n";
+                    echo $matrix[$col][$row]."\n";
                }
           }
 

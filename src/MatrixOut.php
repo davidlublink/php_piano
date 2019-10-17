@@ -11,7 +11,7 @@ class MatrixOut extends MCP23017Bank implements Iterator
      {
           parent::__construct( $chip, $bank );
 
-          $this->write( self::IODIR, new Byte( self::OUT ) ) ;
+          $this->write( self::IODIR, new Byte( 0x00 ) );
           $this->write( self::GPPU, new Byte( 0xff ) ); 
 
      }/*}}}*/
@@ -21,7 +21,7 @@ class MatrixOut extends MCP23017Bank implements Iterator
 
      public function current ( ) /*{{{*/
      {
-          $this->write( self::OLAT, new Byte( pow( 2, $this->idx ) ) );
+          $this->write( self::OLAT, new Byte( 255 - pow( 2, $this->idx ) ) );
           return $this->idx ;
      }/*}}}*/
 

@@ -25,7 +25,7 @@ Class Byte
           if ( $idx > 7 || $idx < 0 )
                throw new Exception("Bad bit");
 
-          $this->byte[ $idx ] = $value ;
+          $this->byte[ 7 - $idx ] = $value ;
      }/*}}}*/
 
      public function setInteger( $value )/*{{{*/
@@ -49,7 +49,7 @@ Class Byte
           if ( $idx > 7 || $idx < 0 )
                throw new Exception("Bad bit");
 
-          return '1' === $this->byte[ $idx ] ;
+          return '1' === $this->byte[ 7 - $idx ] ;
      }/*}}}*/
 
      public function isNonZero()/*{{{*/
@@ -61,7 +61,7 @@ Class Byte
      {
           $r = [] ;
           for ( $i = 0; $i < strlen( $this->byte ); $i++ )
-               if ( $this->getBit( $i ) )
+               if ( !$this->getBit( $i ) )
                     $r[$i] = $i ;
 
           return $r ;
