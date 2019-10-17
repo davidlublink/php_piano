@@ -9,6 +9,7 @@ class MatrixIn extends MCP23017Bank
           parent::__construct( $chip, $bank );
 
           $this->write( self::IODIR, new Byte( 0xff ) );
+          $this->write( self::GPPU, new Byte( 0xff ) ); 
 
      }/*}}}*/
 
