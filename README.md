@@ -15,7 +15,7 @@ Installation instructions :
  Still no instructions
 
 Notes : 
-The I2C class currently represents a massive bottle neck, because it is so slow I can only scan the 4x4 keyboard 1 per second. I will need to optimize the code. If I rewrite I2C class to interface directly with /dev/i2c-* I should be able to read/write faster.
+The I2C class currently represents a massive bottle neck ( because I am invoking shell_exec( i2c[sg]et ) ), because it is so slow I can only scan the 4x4 keyboard 1 per second. I will need to optimize the code. If I rewrite I2C class to interface directly with /dev/i2c-* I should be able to read/write faster.
 
 The fastest piano player on record can play 20 notes per second per hand ( or 40 notes per second ).
 There are 88 notes on the keyboard.
