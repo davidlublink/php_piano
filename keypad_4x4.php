@@ -1,4 +1,16 @@
 <?php
+/**
+ * With this script I connected a 4x4 keypad as follows
+ *
+ * GPIO-B 0 x1
+ * GPIO-B 1 x2
+ * GPIO-B 2 x3
+ * GPIO-B 3 x4
+ * GPIO-A 0 y1
+ * GPIO-A 1 y2
+ * GPIO-A 2 y3
+ * GPIO-A 3 y4
+ */
 
 namespace Lublink ;
 
@@ -21,8 +33,8 @@ $r->disablePins( 4,5,6,7 );
 $matrix = [
      [ '1', '2', '3', 'A'],
      [ '4', '5', '6', 'B'],
-     [ '7', '8', '9', 'B'],
-     [ '*', '0', '#', 'B'],
+     [ '7', '8', '9', 'C'],
+     [ '*', '0', '#', 'D'],
 
      ];
 
@@ -36,7 +48,7 @@ foreach ( $outputs as $output )
 
                foreach ( $byte as $row )
                {
-                    echo $matrix[$col][$row]."\n";
+                    echo '====> '. $matrix[$col][$row]."\n";
                }
           }
 
