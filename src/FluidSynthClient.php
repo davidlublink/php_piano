@@ -2,6 +2,8 @@
 
 namespace Lublink;
 
+use \Exception;
+
 class FluidSynthClient
 {
      private $socket = null;
@@ -14,16 +16,16 @@ class FluidSynthClient
 
           if ( $this->socket === false )
                throw new exception("$errno: $errstr");
-          $this->write( 'load /usr/share/sounds/sf2/FluidR3_GM.sf2' );
+          //$this->write( 'load /usr/share/sounds/sf2/FluidR3_GM.sf2' );
 
      }/*}}}*/
 
-     private function noteon( $note, $speed = 100 )/*{{{*/
+     public function noteon( $note, $speed = 100 )/*{{{*/
      {
           $this->write( 'noteon 1 '. $note. ' '. $speed );
      }/*}}}*/
 
-     private function noteoff( $note )/*{{{*/
+     public function noteoff( $note )/*{{{*/
      {
           $this->write( 'noteoff 1 '. $note ); 
      }/*}}}*/
@@ -31,10 +33,9 @@ class FluidSynthClient
      protected function write( $command )/*{{{*/
      {
           if ( false === fwrite( $this->socket, $command ."\n" ) )
-               throw new Exception("Failed to write $command ");
+               throw new \Exception("Failed to write $command ");
 
-      //    if ( "> " !== ( $r = fread( $this->socket, 2 ) ) )
-        //       throw new exception("received /$r/");
+          fread( $this->socket, 2 ) ;
 
      }/*}}}*/
 

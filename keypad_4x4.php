@@ -16,6 +16,9 @@ namespace Lublink ;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+$synth = new FluidSynthClient( '192.168.56.1') ;
+
+
 $bus = new I2C ;
 
 $chip = new I2CChip( $bus, 0x20 );
@@ -38,6 +41,7 @@ $matrix = [
 
      ];
 
+     while(true)
 foreach ( $outputs as $output )
 {
      foreach( $output as $col => $pin )
@@ -48,7 +52,7 @@ foreach ( $outputs as $output )
 
                foreach ( $byte as $row )
                {
-                    echo '====> '. $matrix[$col][$row]."\n";
+                    $synth->noteon( 50 - ( 3 - $row ) * 4 + $col  ,100 );
                }
           }
 
