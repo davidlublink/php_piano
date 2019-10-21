@@ -31,16 +31,6 @@ $inputs = [];
 $inputs[]   = $r = new MatrixIn( $chip, MatrixOut::A ) ;
 $r->disablePins( 4,5,6,7 );
 
-
-
-$matrix = [
-     [ '1', '2', '3', 'A'],
-     [ '4', '5', '6', 'B'],
-     [ '7', '8', '9', 'C'],
-     [ '*', '0', '#', 'D'],
-
-     ];
-
      while(true)
 foreach ( $outputs as $output )
 {

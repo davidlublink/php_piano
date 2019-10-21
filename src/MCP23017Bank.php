@@ -2,7 +2,7 @@
 
 namespace Lublink ;
 
-Class MCP23017Bank
+abstract class MCP23017Bank
 {
      private $banks = [ 'A' => 0, 'B' => 1 ];
      private $pins  = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
@@ -48,16 +48,16 @@ Class MCP23017Bank
           return $this->chip->write( $this->getRegister( $register), $byte );
      }/*}}}*/
 
-     protected function getPins()
+     protected function getPins()/*{{{*/
      {
           return $this->pins ;
-     }
+     }/*}}}*/
 
-     public function disablePins()
+     public function disablePins()/*{{{*/
      {
           foreach( func_get_args() as $row )
                unset( $this->pins[ $row ]) ;
-     }
+     }/*}}}*/
 
      public function read( $register )/*{{{*/
      {

@@ -16,7 +16,7 @@ class FluidSynthClient
 
           if ( $this->socket === false )
                throw new exception("$errno: $errstr");
-          //$this->write( 'load /usr/share/sounds/sf2/FluidR3_GM.sf2' );
+          $this->write( 'load /usr/share/sounds/sf2/FluidR3_GM.sf2' );
 
      }/*}}}*/
 
