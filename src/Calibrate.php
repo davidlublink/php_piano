@@ -54,6 +54,11 @@ class Calibrate
           while ( true )
           {
                $keys = $this->decoder->getPressedButtons();
+               if ( count( $keys ) )
+               {
+                    print_r($keys) ;
+               }
+               continue;
                foreach ( $this->notes as $note )
                {
                     $note->toggle( $keys ) ;
