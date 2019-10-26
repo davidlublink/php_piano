@@ -13,10 +13,17 @@ Class Note
      {
           $this->number = $i ;
           $this->buttons = $buttons ;
+
      }/*}}}*/
+
+     public function setSynth( $synth )
+     {
+          $this->synth = $synth; 
+     }
 
      public function toggle( $buttons ) /*{{{*/
      {
+
           foreach ( $this->buttons as $button )
           {
                $match = false ;
@@ -60,14 +67,13 @@ Class Note
 
      private function onRelease()/*{{{*/
      {
-          echo 'noteff 1 '. $this->number ; 
+          $this->synth->noteoff( $this->number ); 
      }/*}}}*/
 
-     public function onPress()
+     public function onPress()/*{{{*/
      {
-     echo 'noteon 1 '. $this->number .' 100' ;
-
-     }
+          $this->synth->noteon( $this->number, 100 ); 
+     }/*}}}*/
 
 
 
