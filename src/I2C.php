@@ -12,9 +12,9 @@ Class I2C
 
      public function write ( $chip, $register, Byte $byte )/*{{{*/
      {
-          $e = "i2cset -y {$this->bus} ".$this->toHex($chip) . " ". $this->toHex($register) . ' ' . $this->toHex( $byte->getInteger() ) ;
+          $e = "i2cset -y {$this->bus} ".$this->toHex($chip) . " ". $this->toHex($register->getInteger()) . ' ' . $this->toHex( $byte->getInteger() ) ;
 
-          shell_exec( $e );
+          exec( $e ) ; 
 
      }/*}}}*/
 
@@ -25,11 +25,17 @@ Class I2C
 
      public function read( $chip, $register)/*{{{*/
      {
-          $e = "i2cget -y {$this->bus} ". $this->toHex( $chip)." ". $this->toHex($register) ;
+          $e = "i2cget -y {$this->bus} ". $this->toHex( $chip)." ". $this->toHex($register->getInteger() ) ;
 
           $byte = new Byte;
-          //$byte->setHex( 0x22 );
-          $r = trim(shell_exec( $e ));
+
+          exec( $e, $output, $exit ); 
+
+          $r = $output[0];
+
+          if ( $exit !== 0 )
+               throw new exception("$e failed");
+
           if ( strlen( $r ) !== 4 )
                throw new \Exception($r);
 

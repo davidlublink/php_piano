@@ -23,7 +23,7 @@ Class Byte
 
      public function setInteger( $value )/*{{{*/
      {
-          $this->byte = $value ;
+          $this->byte = (int) $value ;
      }/*}}}*/
 
      public function getInteger( )/*{{{*/
@@ -38,7 +38,12 @@ Class Byte
 
      public function setHex( $hex )/*{{{*/
      {
-          $this->byte = base_convert( $hex, 16, 10 ) ;
+          $this->byte = (int) base_convert( $hex, 16, 10 ) ;
+     }/*}}}*/
+
+     public function inverse()/*{{{*/
+     {
+          $this->byte = 255 - $this->byte ;
      }/*}}}*/
 
      public function getHex( $hex )/*{{{*/
@@ -60,7 +65,10 @@ Class Byte
      {
           $r = [] ;
           for ( $i = 0; $i < 8 ; $i++ )
-               $r[$i] = 0 !== ( $this->byte & pow(2,$i) );
+          {
+               if ( 0 === ( $this->byte & pow(2,$i ) ) )
+                    $r[$i] = $i; 
+          }
 
           return $r; 
      }/*}}}*/

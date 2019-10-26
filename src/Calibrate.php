@@ -9,7 +9,7 @@ class Calibrate
      private $path ;
 
      CONST OFFSET = 40 ;
-     CONST KEYS = 3;
+     CONST KEYS = 25 ;
 
      private $notes = [] ; 
 
@@ -31,15 +31,16 @@ class Calibrate
                if ( array_key_exists( $i, $this->notes ) ) continue ;
                $this->notes[ $i ] = $this->findKey( $i );
 
-               file_put_contents('/tmp/calibrate-phppiano', serialize( $this->notes ) ) ; 
           }
+
+          file_put_contents('/tmp/calibrate-phppiano', serialize( $this->notes ) ) ; 
 
      }/*}}}*/
 
      private function findKey($i )/*{{{*/
      {
           echo 'hold key '. $i . " and hold it until I saw it's ok!\n\n";
-          while ( count( $buttons = $this->decoder->getPressedButtons() ) !== 2 ) ; 
+          while ( count( $buttons = $this->decoder->getPressedButtons() ) !== 2 );
 
           echo "Release all keys\n";
 

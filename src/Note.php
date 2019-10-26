@@ -72,6 +72,7 @@ Class Note
 
      public function onPress()/*{{{*/
      {
+          echo "Pressing {$this->number}\n";
           $this->synth->noteon( $this->number, 100 ); 
      }/*}}}*/
 
