@@ -9,7 +9,7 @@ class Calibrate
      private $path ;
 
      CONST OFFSET = 40 ;
-     CONST KEYS = 7;
+     CONST KEYS = 3;
 
      private $notes = [] ; 
 
@@ -26,12 +26,12 @@ class Calibrate
 
      public function calibrate()/*{{{*/
      {
-          for ( $i = self::OFFSET; $i <= self::OFFSET + self::KEYS ; $i++ )
+          for ( $i = self::OFFSET; $i < self::OFFSET + self::KEYS ; $i++ )
           {
                if ( array_key_exists( $i, $this->notes ) ) continue ;
                $this->notes[ $i ] = $this->findKey( $i );
 
-               file_put_contents('/tmp/calibrate-phppiano', serialize( $this->notes )) ; 
+               file_put_contents('/tmp/calibrate-phppiano', serialize( $this->notes ) ) ; 
           }
 
      }/*}}}*/
@@ -42,11 +42,18 @@ class Calibrate
           while ( count( $buttons = $this->decoder->getPressedButtons() ) !== 2 ) ; 
 
           echo "Release all keys\n";
-          while ( count( $buttons = $this->decoder->getPressedButtons()  ) > 0 ); 
 
-          usleep( 1000000 ); 
+          usleep( 50000 ); 
+          while ( count( $this->decoder->getPressedButtons()  ) > 0 ); 
+
 
           return new Note( $i, $buttons ) ;
+     }/*}}}*/
+
+     public function setSynth( FluidSynthClient $client )/*{{{*/
+     {
+          foreach( $this->notes as $note )
+               $note->setSynth( $client ) ;
      }/*}}}*/
 
      public function run()/*{{{*/
@@ -54,11 +61,6 @@ class Calibrate
           while ( true )
           {
                $keys = $this->decoder->getPressedButtons();
-               if ( count( $keys ) )
-               {
-                    print_r($keys) ;
-               }
-               continue;
                foreach ( $this->notes as $note )
                {
                     $note->toggle( $keys ) ;
