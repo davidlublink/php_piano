@@ -40,7 +40,7 @@ abstract class MCP23017Bank
 
      private function getRegister( $register )/*{{{*/
      {
-          return $register + $this->banks[$this->bank];
+          return new Byte( $register + $this->banks[$this->bank] ) ;
      }/*}}}*/
      
      public function write( $register, Byte $byte )/*{{{*/
