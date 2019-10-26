@@ -6,65 +6,63 @@ use \Exception ;
 
 Class Byte
 {
-     private $byte = '00000000' ;
-     const DEF = '00000000' ;
+     private $byte = 0;
 
      public function __construct( $value = null )/*{{{*/
      {
-          if ( is_int( $value ) )
-               $this->setInteger( $value );
-          elseif ( $value === null )
-               ;
-          else
-               throw new Exception("Unable to handle $value");
-
+          $this->byte = $value ;
      }/*}}}*/
 
      public function setBit( $idx, $value )/*{{{*/
      {
-          if ( $idx > 7 || $idx < 0 )
-               throw new Exception("Bad bit");
-
-          $this->byte[ 7 - $idx ] = $value ;
+          if ( $value ) 
+               $this->byte |= pow( 2, $idx );
+          else
+               $this->byte &= pow( 2, $idx );
      }/*}}}*/
 
      public function setInteger( $value )/*{{{*/
      {
-          $this->byte = str_pad(base_convert( $value, 10, 2 ), 8, '0', STR_PAD_LEFT );
-
+          $this->byte = $value ;
      }/*}}}*/
 
      public function getInteger( )/*{{{*/
      {
-          return base_convert( $this->byte, 2, 10 );
+          return $this->byte ;
+     }/*}}}*/
+
+     public function getChar( )/*{{{*/
+     {
+          return chr( $this->byte ); 
      }/*}}}*/
 
      public function setHex( $hex )/*{{{*/
      {
-          $this->byte = str_pad( base_convert( $hex, 16, 2 ), 8, '0', STR_PAD_LEFT );
+          $this->byte = base_convert( $hex, 16, 10 ) ;
+     }/*}}}*/
+
+     public function getHex( $hex )/*{{{*/
+     {
+          return base_convert( $this->byte, 10, 16 ) ;
      }/*}}}*/
 
      public function getBit( $idx )/*{{{*/
      {
-          if ( $idx > 7 || $idx < 0 )
-               throw new Exception("Bad bit");
-
-          return '1' === $this->byte[ 7 - $idx ] ;
+          return 0 !== ( $this->byte & pow( 2, $idx ) );
      }/*}}}*/
 
      public function isNonZero()/*{{{*/
      {
-          return self::DEF !== $this->byte;
+          return $this->byte > 0 ;
      }/*}}}*/
 
      public function getActiveBits()/*{{{*/
      {
           $r = [] ;
-          for ( $i = 0; $i < strlen( $this->byte ); $i++ )
-               if ( !$this->getBit( $i ) )
-                    $r[$i] = $i ;
+          for ( $i = 0; $i < 8 ; $i++ )
+               $r[$i] = 0 !== ( $this->byte & pow(2,$i) );
 
-          return $r ;
+          return $r; 
      }/*}}}*/
 
 }
