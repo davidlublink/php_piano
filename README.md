@@ -1,6 +1,8 @@
 # php_piano
 A piano, in PHP.
 
+**This project is abandoned. PHP lacks ioctl, read and write commands which are essential for interacting with i2c.**
+
 This project will use MCP23017 chips combined with a raspberry pi to scan an 88 key ( 178 button ) matrix keyboard and will pass the information to a synthesizer ( likely fluidsynth ) which will generate the sounds we want.
 
 
